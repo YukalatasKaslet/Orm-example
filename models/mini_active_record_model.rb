@@ -52,7 +52,7 @@ module MiniActiveRecord
     end
 #**********************Codigo que tenían clases hijas*********************
     def self.all
-      MiniActiveRecord::Model.execute("SELECT * FROM #{self.downcase}s").map do |row|
+      MiniActiveRecord::Model.execute("SELECT * FROM #{self.class.to_s.downcase}s").map do |row|
         self.new(row)
       end
     end 
@@ -64,7 +64,7 @@ module MiniActiveRecord
     end
 
     def self.where(query, *args)
-      MiniActiveRecord::Model.execute("SELECT * FROM #{self.downcase}s WHERE #{query}", *args).map do |row|
+      MiniActiveRecord::Model.execute("SELECT * FROM #{self.class.to_s.downcase}s WHERE #{query}", *args).map do |row|
         self.new(row)
       end
     end
@@ -82,7 +82,7 @@ module MiniActiveRecord
       # This defines the value even if it's not present in attributes
       @attributes = {}
       
-      self.attribute_names.each do |name|
+      self.class.attribute_names.each do |name|
         @attributes[name] = attributes[name]
       end
       @old_attributes = @attributes.dup
@@ -150,7 +150,7 @@ module MiniActiveRecord
         values = self.attributes.values
         marks  = Array.new(fields.length) { '?' }.join(',')
 
-        insert_sql = "INSERT INTO #{self.downcase}s (#{fields.join(',')}) VALUES (#{marks})"
+        insert_sql = "INSERT INTO #{self.class.to_s.downcase}s (#{fields.join(',')}) VALUES (#{marks})"
 
         results = MiniActiveRecord::Model.execute(insert_sql, *values)
 
@@ -166,7 +166,7 @@ module MiniActiveRecord
         values = self.attributes.values
 
         update_clause = fields.map { |field| "#{field} = ?" }.join(',')
-        update_sql = "UPDATE #{self.downcase}s SET #{update_clause} WHERE id = ?"
+        update_sql = "UPDATE #{self.class.to_s.downcase}s SET #{update_clause} WHERE id = ?"
 
         # We have to use the (potentially) old ID attribute in case the user has re-set it.
         MiniActiveRecord::Model.execute(update_sql, *values, self.old_attributes[:id])
