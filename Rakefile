@@ -80,3 +80,4 @@ end
 #namespace y task son palabras ya definidas dentro del Rake de ruby
 #namespace tiene agrupadas las tareas (task) que puede hacer "db" 
 #se llama "db" por base de datos
+#Corre rake db:drop, rake db:setup y rake db:seed
